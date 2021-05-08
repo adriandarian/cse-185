@@ -1,7 +1,7 @@
 %% Load input images
-name = 'Army';
+% name = 'Army';
 % name = 'Backyard';
-% name = 'Mequon';
+name = 'Mequon';
 img1 = im2double(imread(fullfile('data', name, 'frame10.png')));
 img2 = im2double(imread(fullfile('data', name, 'frame11.png')));
 
@@ -34,17 +34,24 @@ for t = 1:k
         for j = 1 + shift : size(Ix_m, 2) - shift
 
             %% extract Ix, Iy, It from local window
+            Ix = Ix_m(i - w : i + w, j - w : j + w);
+            Iy = Iy_m(i - w : i + w, j - w : j + w);
             
+            i2 = round(i + v(i, j));
+            j2 = round(j + u(i, j));
+            It = I1(i - w : i + w, j - w : j + w) - I2(i2 - w : i2 + w, j2 - w : j2 + w);
             
             %% convert Ix, Iy, It to vectors
-            
+            Ix = Ix(:);
+            Iy = Iy(:);
+            It = It(:);
             
             %% construct matrix A and vector b
+            A = [Ix, Iy];
+            b = -It;
+            x = A \ b;
             
-            
-            %% solve A x = b
-            x = [0, 0]; % remove this line
-            
+            %% solve A x = b            
             u_next(i, j) = x(1);
             v_next(i, j) = x(2);
             
